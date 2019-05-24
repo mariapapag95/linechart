@@ -1,17 +1,27 @@
-import React, {Component} from 'react';
+import Chart from './components/Chart'
+import React from 'react';
+import {BrowserRouter} from "react-browser-router";
+import StatsTable from './components/StatsTable'
+import Navbar from './components/Navbar'
+import DateRange from './components/DateRange'
+//import Hover from './components/Hover'
 import './App.css';
-import Data from './components/Data'
 
+//    <div className="table"><LineChart/></div>
+//     <div className="table"><Chart/></div>
+//<div></div>
 
-class App extends Component {
+function App() {
+  return (
+    <BrowserRouter>
+    <div className="background">
+    <div><Navbar/></div>
+    <div className="table"><DateRange/></div>
 
-    render() {
-        return (
-            <div>
-                <Data/>
-            </div>
-        );
-    }
+    <div><StatsTable/></div>
+    </div>
+    </BrowserRouter>
+  );
 }
 
 export default App;
