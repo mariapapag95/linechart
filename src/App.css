@@ -76,8 +76,8 @@ li a:hover:not(.active) {
 }
 
 .button {
-  width: 100px;
-  height: 40px;
+  width: 100%;
+  height: 100%;
   color: rgb(31, 61, 61);
   background-color: white;
   border-radius: 10px;
@@ -110,7 +110,26 @@ li a:hover:not(.active) {
     );
   }
 
-
+  .styled-chart {
+    font-family: "Lato", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    background: #22272b;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 25px;
+    text-align: center;
+    --color-background: #22272b;
+    --color-on-background: #fff;
+    --color-layer-transparent: rgba(0, 5, 11, 0.9);
+    --color-surface: #2c343a;
+    --color-primary: #67c2e4;
+    --color-on-primary: #fff;
+  }
+  
+  .container {
+    margin: 55px;
+  }
 
 @keyframes App-logo-spin {
   from {

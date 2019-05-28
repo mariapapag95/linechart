@@ -1,5 +1,6 @@
 import React, {Component} from "react"
 import {FlexibleXYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, LineSeries} from 'react-vis';
+import Calendar from './Calendar'
 
 
 const API_URL = "http://localhost:4444";
@@ -13,8 +14,9 @@ class Chart extends Component{
     }
     
     componentDidMount() {
+// itterates over api data to extract x and y values based on key
+// returns array of x values and array of y values
         fetch(API_URL)
-        // Bringing JSON data into a variable
         .then(blob => blob.json()).then(json => {
             let baseball_api = json
             console.log(baseball_api)
@@ -32,10 +34,8 @@ class Chart extends Component{
         const dataset = x.map((x, i) => 
             ({x:x, y: y[i]}));
 
-        console.log("this is the new dict", this.state.dataset)
         this.setState({dataset: dataset})
         console.log("LORD HAVE MERCY ON MY SOUL",this.state.dataset)
-
             }
         )
     }

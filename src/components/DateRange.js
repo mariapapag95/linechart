@@ -1,7 +1,6 @@
 import React, {Component} from "react"
-import UserInput from './UserInput'
 import {FlexibleXYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, LineSeries} from 'react-vis';
-import { thisTypeAnnotation } from "@babel/types";
+import Calendar from './Calendar'
 
 const API_URL = "http://localhost:4444"
 
@@ -37,7 +36,7 @@ class DateRange extends Component {
                 .then(blob => blob.json()).then(json => {
                 let baseball_api = json
     
-                let x = this.dateRange(this.state.startdate, this.state.enddate)
+                let x = ////////////////this.dateRange(this.state.startdate, this.state.enddate)
                     this.setState({x: x})
                     console.log("Date:", x)
             
@@ -53,21 +52,6 @@ class DateRange extends Component {
                 this.setState({dataset: dataset})
                 console.log("thist is dataset afer setState",this.state.dataset)
             })}
-
-            
-            dateRange = (start, end) => {
-                // The next two lines are where it will be formated from date to Unix 
-                let startNum = Number(start)
-                let endNum = Number(end)
-                const day = 86400
-                const length = endNum - startNum
-                // test print
-                console.log(Array.from({ length }, (_, i) => startNum + (i * day)))
-                //
-                return Array.from({ length }, (_, i) => startNum + i)
-                }
-                
-                
 
 
             nothing() {
@@ -87,7 +71,7 @@ class DateRange extends Component {
                 let startdate = Number(document.getElementById(startdate))
                 let enddate = Number(document.getElementById(enddate))
 
-                let x = this.dateRange(startdate, enddate)
+                let x = /////////////////////this.dateRange(startdate, enddate)
                     this.setState({x: x})
                 console.log("Date:", x)
         
@@ -96,11 +80,6 @@ class DateRange extends Component {
                     this.setState({y: y})
                 console.log("Portfolio Value:", y)
 
-                //let y = baseball_api.map((element, i) => {
-                  //  return element.Portfolio_Value})
-                    //this.setState({y: y})
-               // console.log("Portfolio Value:", y)
-        
                 const dataset = x.map((x, i) => 
                     ({x:x, y: y[i]}));
         
@@ -111,35 +90,12 @@ class DateRange extends Component {
                     }
                 )
             }
-/////////////////////////////////////////////////////////////////////////////////////////
-//disabled={!this.notEmpty()} 
-
-
 
         
             render () {
                 return (
                     <div>
-                        <div className="center"><h1 className="text">Enter Date Range</h1>
-                        <form onSubmit={this.handleSubmit}>
-                            <input 
-                            id="startdate" 
-                            placeholder="Start Date"
-                            value={this.state.startdate}
-                            onChange={this.handleChange}/>
-                            <input 
-                            id="enddate" 
-                            placeholder="End Date"
-                            value={this.state.enddate}
-                            onChange={this.handleChange}/>
-                            <button 
-                            className="button" 
-                            type="submit"
-                            disabled={!this.notEmpty()}
-                            onClick={() => {this.setDates()}}> 
-                            <strong>View Data</strong></button>
-                        </form>
-                        </div>
+                        <div className="center">
                         <FlexibleXYPlot
                         width={1000}
                         height={300}>
@@ -159,6 +115,7 @@ class DateRange extends Component {
                             }
                             data={this.state.dataset}/>
                     </FlexibleXYPlot>
+                    </div>
                     </div>
                 );
             }        
