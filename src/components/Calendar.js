@@ -1,18 +1,19 @@
-import React, { Component } from 'react'
-import {FlexibleXYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, LineSeries} from 'react-vis';
+import React, { Component, Redirect } from 'react'
+import LineChart from './LineChart'
+import Dates from './ChooseDates'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-//import isAfter from "date-fns/isAfter"
+import Month from './Month'
+import isAfter from "date-fns/isAfter"
 import 'react-datepicker/dist/react-datepicker-cssmodules.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { parse } from '@babel/core';
+//import { thisTypeAnnotation } from '@babel/types';
+//import continuousSizeLegend from 'react-vis/dist/legends/continuous-size-legend';
+//import { thisTypeAnnotation } from '@babel/types';
 
-
-// TO DO: why does start date refresh to one day after the end date
-// after hitting render chart button?
-
-
-const API_URL = "http://localhost:4444"
+const API_URL = "http://localhost:5000/api/dataset"
 
 class Calendar extends Component {
 
@@ -28,36 +29,44 @@ class Calendar extends Component {
       dataset: [],
       x : [],
       y : [],
+      redirect : false, 
       //dateRange: []
     }
   }
 
-  baseball_api() {
+  getBaseballApi() {
+    // fetches api data and stores in this.state.allData
+    // makes default dataset the full dataset 
+        fetch (API_URL)
+        .then(blob => blob.json()).then(json => {
+          let baseballApi = json
+          console.log("BASEBALLAPI", baseballApi)
+          let x = baseballApi.map((element, i) => {
+              return Number(element.Date)})
+          let y = baseballApi.map((element, i) => {
+              return element.Portfolio_Value})
+          const dataset = x.map((x, i) => 
+                ({x:x, y: y[i]}));
+
+          this.setState({allx: x, ally: y, allData: baseballApi, dataset: dataset})
+      })}
+
+  postBaseballApi() {
 // fetches api data and stores in this.state.allData
 // makes default dataset the full dataset 
-    fetch (API_URL)
-        .then(blob => blob.json()).then(json => {
-        let baseball_api = json
-        this.setState({allData : baseball_api})
-        console.log("THIS IS state.allData=== ", this.state.allData)
+    let dateRange = {'start_date': parseFloat(this.state.startDate), 'end_date': parseFloat(this.state.endDate)}
+    fetch (API_URL, {
+      headers:{"Content-Type" : "application/json"}, 
+      body: JSON.stringify(dateRange),
+      mode:"cors",
+      method:"post"
+    })
+  }
 
-      let x = baseball_api.map((element, i) => {
-          return Number(element.Date)})
-          this.setState({allx: x})
-        console.log("All Dates:", this.state.allx)
-      let y = baseball_api.map((element, i) => {
-          return element.Portfolio_Value})
-          this.setState({ally: y})
-        console.log("All Portfolio Values:", this.state.ally)
-        
-      const dataset = x.map((x, i) => 
-            ({x:x, y: y[i]}));
-
-        this.setState({dataset: dataset})
-        console.log("this is state.completeDataset=====", this.state.dataset)
-  })}
-
-  componentDidMount() {return this.baseball_api()}
+componentDidMount() {
+  this.getBaseballApi()
+  this.postBaseballApi()
+}
 
   notEmpty() {
 // to disable button when the user has not selected start and end date
@@ -69,9 +78,9 @@ class Calendar extends Component {
 // handles for user error and updates
     startDate = startDate || this.state.startDate
     endDate = endDate || this.state.endDate
-    //if (isAfter(startDate, endDate)) {
-    //  endDate = startDate
-   // }
+    if (isAfter(startDate, endDate)) {
+      endDate = startDate
+    }
     this.setState({ startDate, endDate })
   }
 
@@ -82,7 +91,7 @@ class Calendar extends Component {
   unixDate(date) {
 // converts date object to unixtime
     date = new Date(date)
-    let timestamp = date.getTime()
+    let timestamp = date.getTime()/1000
     return timestamp}
 
   returnDateArray() {
@@ -100,23 +109,21 @@ class Calendar extends Component {
     }
     let unixArray = dateArray.map((element, i) => {
       return this.unixDate(element)})
+    console.log(unixArray)
     return unixArray
   }
 
-  returnPortfolio(arrayX) {
-// DEBUG: cannot find start date index in this.state.allx even though it should
-// it was working as text(array)
-// I think because it is now being called inside dateRangeData, directly after
-//     x is set to a new state, something is going wrong, even though I have made
-//     a new state (allx) to try to avoid this bug
+  returnSplice(arrayX) {
+// returns section of dataset which includes only the dates from the selected date range
+// by spicing the original dataset 
+// gets the start date, then the length of the array
+// finds the index of the start date in the original dataset
+// then splices the original dataset for that many items, starting at the correct index(start date)
     let start = arrayX[0]
-    console.log("the start date, first item in the date range array", start)
     let games = arrayX.length
-    console.log("this is the length of the array which has all the dates the user chose", games)
     let index = this.state.allx.indexOf(start)
-    console.log("index position in this.state.allx, which is all the x values in the api data", index)
     let section = this.state.dataset.splice(games,index)
-    console.log("this is the section of dataset according to the date range selected by the user", section)
+    console.log("this is the section", section)
     return section}
 
 
@@ -129,49 +136,44 @@ class Calendar extends Component {
 //            y axis is portfolio value
 // TO DO: incorporate stategies via api call 
 //        have dropdown menu for options daterange (30 days, year "_", from year1 through year2, etc)
-    let x = this.returnDateArray()
-
-    let y = this.returnPortfolio(x)
-
-    const dataset = x.map((x, i) =>
-                  ({x:x, y:y[i]}))
-    console.log("this is the section of the dataset according to user chosen date range", dataset)
+    let dateArray = this.returnDateArray()
+    let dataset = this.returnSplice(dateArray)
     this.setState({dataset: dataset})
 }
 
 
-    test(arrayX){
-    console.log(arrayX[0])
-    let games = arrayX.length
-    console.log("this should be 3", games)
-    let index = this.state.allx.indexOf(arrayX[0])
-    console.log("index position in this.state.allx, which is all the x values in the api data", index)
-    let section = this.state.dataset.splice(games,index)
-    console.log("this is the section of dataset according to the date range selected by the user", section)
-    return section}
+    test(){
+    this.postBaseballApi()}
+
 
   render() {
     return (
       <div>
-
-
+        <Month/>
         <button 
             className="button" 
             type="submit"
-            onClick={() => {this.test([1554177600,1554264000,1554350400])}}>
+            onClick={() => {this.test()}}>
             <strong>test</strong>
         </button>
 
+        <button 
+            className="button" 
+            type="submit"
+            onClick={() => <Month/>}>
+            <strong>Last 30 Days</strong>
+        </button>
 
         <button 
             className="button" 
             type="submit"
-            disabled={this.notEmpty()}
-            onClick={() => {this.dateRangeData()}}>
-            <strong>Render Chart</strong>
+            onClick={() => <Month/>}>
+            <strong>Last Year</strong>
         </button>
+        <Dates/>
         <div>
           <DatePicker
+            className="input"
             placeholderText="Start date"
             selected={this.state.startDate}
             selectsStart
@@ -183,6 +185,7 @@ class Calendar extends Component {
             id = "startdate"
           />
           <DatePicker
+            className="input"
             placeholderText="End date"
             selected={this.state.endDate}
             selectsEnd
@@ -195,28 +198,7 @@ class Calendar extends Component {
             id = "enddate"
           />
         </div>
-        <div className="center">
-                        <FlexibleXYPlot
-                        width={1000}
-                        height={300}>
-                        <VerticalGridLines 
-                            style ={{stroke : "#f0f0f0"}}/>
-                        <HorizontalGridLines 
-                            style ={{stroke : "#f0f0f0"}}/>
-                        <XAxis 
-                            tickLabelAngle = {9}
-                            style ={{text: {fontSize: 10}}}/>
-                        <YAxis 
-                            style ={{text: {fontSize: 7}}}/>
-                        <LineSeries
-                        // THIS GRAPH RENDERS LINE GRAPH FOR PORTFOLIO VALUE OVER TIME FOR SELECTED RANGE OF DATES
-                            style = {
-                                {stroke : "green",
-                                fill : "none"}
-                            }
-                            data={this.state.dataset}/>
-                    </FlexibleXYPlot>
-                    </div>
+        
       </div>
     )
   }

@@ -11,4 +11,4 @@ function RenderChart() {
     )
 }
 
-export default RenderChart;
+export default RenderChart();
