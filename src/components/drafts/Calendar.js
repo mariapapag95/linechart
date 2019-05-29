@@ -1,10 +1,10 @@
 import React, { Component, Redirect } from 'react'
-import LineChart from './LineChart'
-import Dates from './ChooseDates'
+import LineChart from '../LineChart'
+import Dates from '../DateRange'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import Month from './Month'
+import Month from '../MonthDropdown'
 import isAfter from "date-fns/isAfter"
 import 'react-datepicker/dist/react-datepicker-cssmodules.css'
 import 'bootstrap/dist/css/bootstrap.min.css'

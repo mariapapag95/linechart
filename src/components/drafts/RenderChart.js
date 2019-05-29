@@ -1,6 +1,6 @@
 import React from 'react'
 import Calendar from './Calendar'
-import DateRange from './DateRange'
+import DateRange from '../DateRange'
 
 function RenderChart() {
     return(

@@ -1,5 +1,5 @@
 import React from 'react'
-import {FlexibleXYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, LineSeries} from 'react-vis';
+import {FlexibleXYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, LineMarkSeries} from 'react-vis';
 
 
 function LineChart(props) {
@@ -7,7 +7,7 @@ function LineChart(props) {
         <div className="center">
                         <FlexibleXYPlot
                         margin={{ top: 50, left: 50, right: 50, bottom: 50 }}
-                        width={800}
+                        width={700}
                         height={300}>
                         <VerticalGridLines 
                             style ={{stroke : "#f0f0f0"}}/>
@@ -18,7 +18,7 @@ function LineChart(props) {
                             style ={{text: {fontSize: 10}}}/>
                         <YAxis 
                             style ={{text: {fontSize: 7}}}/>
-                        <LineSeries
+                        <LineMarkSeries
                         // THIS GRAPH RENDERS LINE GRAPH FOR PORTFOLIO VALUE OVER TIME FOR SELECTED RANGE OF DATES
                             style = {
                                 {stroke : "green",
