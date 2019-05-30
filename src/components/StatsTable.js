@@ -7,6 +7,7 @@ const data = [1,2,3,4,5,6,7];
 
 
 class StatsTable extends Component {
+    
     render () {
         let rows = data.map((element, i) => {
             return <Stats some_data={element} key={i} />

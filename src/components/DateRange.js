@@ -13,7 +13,7 @@ const API_URL = "http://localhost:5000/api/dataset"
 
 export default class DateRange extends React.Component {
   static defaultProps = {
-    numberOfMonths: 1,
+    numberOfMonths: 2,
   };
   constructor(props) {
     super(props);
@@ -26,6 +26,7 @@ export default class DateRange extends React.Component {
       ally:[],
       allData:[],
       dataset:[],
+      strategyOne: [],
     }
   }
   getInitialState() {
@@ -138,7 +139,7 @@ returnDateArray() {
     const modifiers = { start: from, end: to };
     return (
       <div>
-      <LineChart data = {this.state.dataset}/>
+      <LineChart data = {this.state.dataset} strategyOne = {this.state.strategyOne}/>
       <div className="RangeExample">
         <p className='input'>
           {!from && !to && 'Select start date'}

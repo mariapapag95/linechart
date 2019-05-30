@@ -25,6 +25,13 @@ function LineChart(props) {
                                 fill : "none"}
                             } 
                             data= {props.data}/>
+                        <LineMarkSeries
+                        // THIS GRAPH RENDERS LINE GRAPH FOR PORTFOLIO VALUE OVER TIME FOR SELECTED RANGE OF DATES
+                            style = {
+                                {stroke : "red",
+                                fill : "none"}
+                            } 
+                            data= {props.strategyOne}/>
                     </FlexibleXYPlot>
                     </div>
     )
