@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 //import continuousSizeLegend from 'react-vis/dist/legends/continuous-size-legend';
 import LineChart from './LineChart';
+import { th } from 'date-fns/esm/locale';
 
 const API_URL = "http://localhost:5000/api/dataset"
 
@@ -25,8 +26,9 @@ export default class DateRange extends React.Component {
       allx:[],
       ally:[],
       allData:[],
-      dataset:[],
-      strategyOne: [],
+      dataset: undefined,
+      strategyOne: undefined,
+      strategyTwo: undefined,
     }
   }
   getInitialState() {
@@ -51,9 +53,9 @@ export default class DateRange extends React.Component {
           let baseballApi = json
           console.log("BASEBALLAPI", baseballApi)
           let x = baseballApi.map((element, i) => {
-              return Number(element.Date)})
+              return element.date})
           let y = baseballApi.map((element, i) => {
-              return element.Portfolio_Value})
+              return element.portfolio_value})
           const dataset = x.map((x, i) => 
                 ({x:x, y: y[i]}));
             console.log(x,y)
@@ -61,8 +63,7 @@ export default class DateRange extends React.Component {
       })}
 
   postBaseballApi() {
-// fetches api data and stores in this.state.allData
-// makes default dataset the full dataset 
+    // post request for 
     let dateRange = {'start_date': this.state.from, 'end_date':this.state.to}
     fetch (API_URL, {
       headers:{"Content-Type" : "application/json"}, 
@@ -73,13 +74,12 @@ export default class DateRange extends React.Component {
   }
 
 componentDidMount() {
-  this.getBaseballApi()
   this.postBaseballApi()
 }
 
   notEmpty() {
 // to disable button when the user has not selected start and end date
-    return this.state.from===undefined
+    return this.state.from===undefined && this.state.to===undefined
     }
 
 unixDate(date) {
@@ -132,6 +132,28 @@ returnDateArray() {
                 console.log("the section", section)
                 this.setState({dataset: section})
                 console.log("state", section)}
+
+    strategyOne(){
+      this.setState({strategyOne:[{x:1, y:3},{x:2, y:4},{x:3, y:-2},{x:4, y:7},{x:5, y:3},{x:6, y:-3},{x:7, y:3}]})
+    }
+    strategyTwo(){
+      this.setState({strategyTwo:[{x:1, y:4},{x:2, y:6},{x:3, y:-12},{x:4, y:7},{x:5, y:6},{x:6, y:-1},{x:7, y:6}]})
+    }
+
+    showAll() {
+      if (this.state.dataset===undefined){this.getBaseballApi()}
+      if (this.state.dataset!==undefined){this.setState({dataset: undefined})}
+    }
+
+    showStrategyOne() {
+      if (this.state.strategyOne===undefined){this.strategyOne()}
+      if (this.state.strategyOne!==undefined){this.setState({strategyOne: undefined})}
+    }
+
+    showStrategyTwo() {
+      if (this.state.strategyTwo===undefined){this.strategyTwo()}
+      if (this.state.strategyTwo!==undefined){this.setState({strategyTwo: undefined})}
+    }
       
 
   render() {
@@ -139,7 +161,22 @@ returnDateArray() {
     const modifiers = { start: from, end: to };
     return (
       <div>
-      <LineChart data = {this.state.dataset} strategyOne = {this.state.strategyOne}/>
+        <button 
+        className ='button' 
+        onClick={()=>{this.showAll()}}>
+        Show All
+        </button>
+        <button 
+        className ='button' 
+        onClick={()=>{this.showStrategyOne()}}>
+        Show Strategy 1
+        </button>
+        <button 
+        className ='button' 
+        onClick={()=>{this.showStrategyTwo()}}>
+        Show Strategy 2
+        </button>
+      <LineChart data = {this.state.dataset} strategyOne = {this.state.strategyOne} strategyTwo = {this.state.strategyTwo}/>
       <div className="RangeExample">
         <p className='input'>
           {!from && !to && 'Select start date'}
