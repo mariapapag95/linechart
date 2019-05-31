@@ -9,6 +9,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 //import continuousSizeLegend from 'react-vis/dist/legends/continuous-size-legend';
 import LineChart from './LineChart';
 import { th } from 'date-fns/esm/locale';
+import { thisTypeAnnotation } from '@babel/types';
+import continuousColorLegend from 'react-vis/dist/legends/continuous-color-legend';
 
 const API_URL = "http://localhost:5000/api/dataset"
 
@@ -21,16 +23,40 @@ export default class DateRange extends React.Component {
     this.handleDayClick = this.handleDayClick.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
     this.state = {
-      from: undefined,
-      to: undefined,
+      from: 1554523200,
+      to: 1554609600,
       allx:[],
       ally:[],
       allData:[],
       dataset: undefined,
       strategyOne: undefined,
       strategyTwo: undefined,
+      home: undefined,
+      visitor: undefined,
+      strategy: undefined,
+      betType: undefined,
+      overs: undefined,
+      underdogs: undefined,
+      unders: undefined, 
+      favorites: undefined,
+      homeUnderdogsML: undefined,
+      visitorFavoritesML: undefined,
+      visitorUnderdogsML: undefined,
+      visitorUnderdogsRL: undefined,
+      homeFavoritesML: undefined,
+      homeFavoritesRL: undefined,
+      longshotTeamsML: undefined,
+      longshotTeamsRL: undefined,
+      betAmount: undefined,
     }
   }
+
+  handleChange = event => {
+    this.setState({
+      [event.target.id]: event.target.value
+    })
+}
+
   getInitialState() {
     return {
       from: undefined,
@@ -64,17 +90,37 @@ export default class DateRange extends React.Component {
 
   postBaseballApi() {
     // post request for 
-    let dateRange = {'start_date': this.state.from, 'end_date':this.state.to}
+    let post = {
+      'start_date': 1554523200, 
+      'end_date': 1554609600, 
+      'bet_type':this.state.betType, 
+      'strategy':this.state.strategy,
+      'home':this.state.home, 
+      'visitor':this.state.visitor, 
+      'overs':this.state.overs, 
+      'underdogs':this.state.underdogs, 
+      'unders':this.state.unders, 
+      'favorites':this.state.favorites, 
+      'home_underdogs_ml':this.state.homeUnderdogsML, 
+      'visitor_favorites_ml':this.state.visitorFavoritesML, 
+      'visitor_underdogs_ml':this.state.visitorUnderdogsML, 
+      'visitor_underdogs_rl':this.state.visitorUnderdogsRL, 
+      'home_favorites_ml':this.state.homeFavoritesML, 
+      'home_favorites_rl':this.state.homeFavoritesRL, 
+      'longshot_teams_ml':this.state.longshotTeamsML, 
+      'longshot_teams_rl':this.state.longshotTeamsRL,
+      'bet_amount':this.state.betAmount,}
     fetch (API_URL, {
       headers:{"Content-Type" : "application/json"}, 
-      body: JSON.stringify(dateRange),
+      body: JSON.stringify(post),
       mode:"cors",
       method:"post"
     })
   }
 
 componentDidMount() {
-  this.postBaseballApi()
+  //this.postBaseballApi()
+  this.getBaseballApi()
 }
 
   notEmpty() {
@@ -133,6 +179,33 @@ returnDateArray() {
                 this.setState({dataset: section})
                 console.log("state", section)}
 
+    returnStrategy() {
+      this.setState({betAmount: document.getElementById('betAmount').value})
+      console.log(this.state.from, this.state.to)
+      let post = {'start_date': this.state.from,
+                  'end_date': this.state.to,
+                  'bet_type': this.state.betType,
+                  'strategy': this.state.strategy,
+                  'bet_amount': this.state.betAmount} 
+      console.log("did it work", JSON.stringify(post))
+      fetch (API_URL, {
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(post),
+        mode:"cors",
+        method:"POST"
+      })
+    }
+
+
+    setStartEnd() {
+      this.setState({from : 1554523200})
+      this.setState({to : 1554609600 })
+    }
+
+    printDate() {
+      console.log(this.state.to, this.state.from)
+    }
+
     strategyOne(){
       this.setState({strategyOne:[{x:1, y:3},{x:2, y:4},{x:3, y:-2},{x:4, y:7},{x:5, y:3},{x:6, y:-3},{x:7, y:3}]})
     }
@@ -176,60 +249,38 @@ returnDateArray() {
         onClick={()=>{this.showStrategyTwo()}}>
         Show Strategy 2
         </button>
-      <LineChart data = {this.state.dataset} strategyOne = {this.state.strategyOne} strategyTwo = {this.state.strategyTwo}/>
-      <div className="RangeExample">
-        <p className='input'>
-          {!from && !to && 'Select start date'}
-          {from && !to && 'Select end date'}
-          {from &&
-            to &&
-            `Selected from ${from.toLocaleDateString()} to
-                ${to.toLocaleDateString()}`}{' '}
-          {from &&
-            to && (
-              <button className="link" onClick={this.handleResetClick}>
-                Reset
-              </button>
-            )}
-        </p>
-        
-        <DayPicker
-          className="Selectable"
-          numberOfMonths={this.props.numberOfMonths}
-          selectedDays={[from, { from, to }]}
-          modifiers={modifiers}
-          onDayClick={this.handleDayClick}
-        />
+
+
         <button 
-        className='button' 
+        className ='button' 
+        onClick={()=>{this.setStartEnd()}}>
+        Set start date, end date
+        </button>
+        <button 
+        className ='button' 
+        onClick={()=>{this.setState({strategy : 'unders'})}}>
+        Click to choose unders strategy
+        </button>
+        <button 
+        className ='button' 
+        onClick={()=>{this.setState({betType : 'ml'})}}>
+        Click to choose bet type ML
+        </button>
+      <input 
+      className='input'
+      id='betAmount'
+      placeholder='Enter bet amount'
+      onChange={this.handleChange}>
+      </input>
+      <button 
+        className='redbutton' 
         type='submit' 
-        onClick={()=>{this.returnSplice(this.returnDateArray())}}
-        disabled={this.notEmpty()}>
+        onClick={()=>{this.returnStrategy()}}>
             Render Graph
           </button>
-        <Helmet>
 
-        
-          <style>{`
-  .Selectable .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
-    background-color: #f0f8ff !important;
-    color: #4a90e2;
-  }
-  .Selectable .DayPicker-Day {
-    border-radius: 0 !important;
-  }
-  .Selectable .DayPicker-Day--start {
-    border-top-left-radius: 50% !important;
-    border-bottom-left-radius: 50% !important;
-  }
-  .Selectable .DayPicker-Day--end {
-    border-top-right-radius: 50% !important;
-    border-bottom-right-radius: 50% !important;
-  }
-`}</style>
-        </Helmet>
-        
-      </div>
+
+
       </div>
     );
   }
