@@ -23,8 +23,8 @@ export default class DateRange extends React.Component {
     this.handleDayClick = this.handleDayClick.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
     this.state = {
-      from: 1554523200,
-      to: 1554609600,
+      from: undefined,
+      to: undefined,
       allx:[],
       ally:[],
       allData:[],
@@ -91,8 +91,8 @@ export default class DateRange extends React.Component {
   postBaseballApi() {
     // post request for 
     let post = {
-      'start_date': 1554523200, 
-      'end_date': 1554609600, 
+      'start_date': this.state.from, 
+      'end_date': this.state.to, 
       'bet_type':this.state.betType, 
       'strategy':this.state.strategy,
       'home':this.state.home, 
@@ -182,11 +182,11 @@ returnDateArray() {
     returnStrategy() {
       this.setState({betAmount: document.getElementById('betAmount').value})
       console.log(this.state.from, this.state.to)
-      let post = {'start_date': this.state.from,
-                  'end_date': this.state.to,
+      let post = {'start_date': this.unixDate(this.state.from),
+                  'end_date': this.unixDate(this.state.to),
                   'bet_type': this.state.betType,
                   'strategy': this.state.strategy,
-                  'bet_amount': this.state.betAmount} 
+                  'bet_amount': Number(this.state.betAmount)} 
       console.log("did it work", JSON.stringify(post))
       fetch (API_URL, {
         headers: {"Content-Type": "application/json"},
@@ -206,11 +206,12 @@ returnDateArray() {
       console.log(this.state.to, this.state.from)
     }
 
-    strategyOne(){
-      this.setState({strategyOne:[{x:1, y:3},{x:2, y:4},{x:3, y:-2},{x:4, y:7},{x:5, y:3},{x:6, y:-3},{x:7, y:3}]})
+    lastYear(){
+      console.log
     }
-    strategyTwo(){
-      this.setState({strategyTwo:[{x:1, y:4},{x:2, y:6},{x:3, y:-12},{x:4, y:7},{x:5, y:6},{x:6, y:-1},{x:7, y:6}]})
+
+    lastMonth(){
+      // working on this
     }
 
     showAll() {
@@ -237,17 +238,17 @@ returnDateArray() {
         <button 
         className ='button' 
         onClick={()=>{this.showAll()}}>
-        Show All
+        under construction
         </button>
         <button 
         className ='button' 
         onClick={()=>{this.showStrategyOne()}}>
-        Show Strategy 1
+        ignore
         </button>
         <button 
         className ='button' 
         onClick={()=>{this.showStrategyTwo()}}>
-        Show Strategy 2
+        ignore :) 
         </button>
 
 
@@ -258,7 +259,7 @@ returnDateArray() {
         </button>
         <button 
         className ='button' 
-        onClick={()=>{this.setState({strategy : 'unders'})}}>
+        onClick={()=>{this.setState({strategy : 'favorites'})}}>
         Click to choose unders strategy
         </button>
         <button 
@@ -278,6 +279,62 @@ returnDateArray() {
         onClick={()=>{this.returnStrategy()}}>
             Render Graph
           </button>
+
+
+          <LineChart data = {this.state.dataset} strategyOne = {this.state.strategyOne} strategyTwo = {this.state.strategyTwo}/>
+      <div className="RangeExample">
+        <p className='input'>
+          {!from && !to && 'Select start date'}
+          {from && !to && 'Select end date'}
+          {from &&
+            to &&
+            `Selected from ${from.toLocaleDateString()} to
+                ${to.toLocaleDateString()}`}{' '}
+          {from &&
+            to && (
+              <button className="link" onClick={this.handleResetClick}>
+                Reset
+              </button>
+            )}
+        </p>
+        
+        <DayPicker
+          className="Selectable"
+          numberOfMonths={this.props.numberOfMonths}
+          selectedDays={[from, { from, to }]}
+          modifiers={modifiers}
+          onDayClick={this.handleDayClick}
+        />
+        <button 
+        className='button' 
+        type='submit' 
+        onClick={()=>{this.returnSplice(this.returnDateArray())}}
+        disabled={this.notEmpty()}>
+            Render Graph
+          </button>
+        <Helmet>
+
+        
+          <style>{`
+  .Selectable .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+    background-color: #f0f8ff !important;
+    color: #4a90e2;
+  }
+  .Selectable .DayPicker-Day {
+    border-radius: 0 !important;
+  }
+  .Selectable .DayPicker-Day--start {
+    border-top-left-radius: 50% !important;
+    border-bottom-left-radius: 50% !important;
+  }
+  .Selectable .DayPicker-Day--end {
+    border-top-right-radius: 50% !important;
+    border-bottom-right-radius: 50% !important;
+  }
+`}</style>
+        </Helmet>
+        
+      </div>
 
 
 
