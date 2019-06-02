@@ -1,6 +1,8 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import DayPicker, { DateUtils } from 'react-day-picker';
+import DropdownBetType from './drafts/DropdownBetType'
+import DropdownStrategy from './drafts/DropdownStrategy'
 import 'react-day-picker/lib/style.css';
 import 'react-datepicker/dist/react-datepicker.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -22,6 +24,7 @@ export default class DateRange extends React.Component {
     super(props);
     this.handleDayClick = this.handleDayClick.bind(this);
     this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleDropDownClick = this.handleDropDownClick.bind(this);
     this.state = {
       from: undefined,
       to: undefined,
@@ -31,30 +34,22 @@ export default class DateRange extends React.Component {
       dataset: undefined,
       strategyOne: undefined,
       strategyTwo: undefined,
-      home: undefined,
-      visitor: undefined,
       strategy: undefined,
       betType: undefined,
-      overs: undefined,
-      underdogs: undefined,
-      unders: undefined, 
-      favorites: undefined,
-      homeUnderdogsML: undefined,
-      visitorFavoritesML: undefined,
-      visitorUnderdogsML: undefined,
-      visitorUnderdogsRL: undefined,
-      homeFavoritesML: undefined,
-      homeFavoritesRL: undefined,
-      longshotTeamsML: undefined,
-      longshotTeamsRL: undefined,
       betAmount: undefined,
     }
   }
 
-  handleChange = event => {
+handleChange = event => {
     this.setState({
       [event.target.id]: event.target.value
     })
+}
+
+handleDropDownClick = (event) => {
+  this.setState({
+    [event.target.name]: event.target.id,
+  })
 }
 
   getInitialState() {
@@ -95,20 +90,6 @@ export default class DateRange extends React.Component {
       'end_date': this.state.to, 
       'bet_type':this.state.betType, 
       'strategy':this.state.strategy,
-      'home':this.state.home, 
-      'visitor':this.state.visitor, 
-      'overs':this.state.overs, 
-      'underdogs':this.state.underdogs, 
-      'unders':this.state.unders, 
-      'favorites':this.state.favorites, 
-      'home_underdogs_ml':this.state.homeUnderdogsML, 
-      'visitor_favorites_ml':this.state.visitorFavoritesML, 
-      'visitor_underdogs_ml':this.state.visitorUnderdogsML, 
-      'visitor_underdogs_rl':this.state.visitorUnderdogsRL, 
-      'home_favorites_ml':this.state.homeFavoritesML, 
-      'home_favorites_rl':this.state.homeFavoritesRL, 
-      'longshot_teams_ml':this.state.longshotTeamsML, 
-      'longshot_teams_rl':this.state.longshotTeamsRL,
       'bet_amount':this.state.betAmount,}
     fetch (API_URL, {
       headers:{"Content-Type" : "application/json"}, 
@@ -207,7 +188,7 @@ returnDateArray() {
     }
 
     lastYear(){
-      console.log
+      // working on this too
     }
 
     lastMonth(){
@@ -233,18 +214,23 @@ returnDateArray() {
   render() {
     const { from, to } = this.state;
     const modifiers = { start: from, end: to };
+    console.log(this.state.strategy)
+    console.log(this.state.betType)
     return (
       <div>
+        
         <button 
         className ='button' 
         onClick={()=>{this.showAll()}}>
         under construction
         </button>
+        
         <button 
         className ='button' 
         onClick={()=>{this.showStrategyOne()}}>
         ignore
         </button>
+        
         <button 
         className ='button' 
         onClick={()=>{this.showStrategyTwo()}}>
@@ -257,16 +243,11 @@ returnDateArray() {
         onClick={()=>{this.setStartEnd()}}>
         Set start date, end date
         </button>
-        <button 
-        className ='button' 
-        onClick={()=>{this.setState({strategy : 'favorites'})}}>
-        Click to choose unders strategy
-        </button>
-        <button 
-        className ='button' 
-        onClick={()=>{this.setState({betType : 'ml'})}}>
-        Click to choose bet type ML
-        </button>
+        
+        
+        <DropdownBetType onDropClick={this.handleDropDownClick}></DropdownBetType>
+        <DropdownStrategy betType={this.state.betType} onDropClick={this.handleDropDownClick}></DropdownStrategy>
+
       <input 
       className='input'
       id='betAmount'
