@@ -19,6 +19,7 @@ class DropdownBetType extends React.Component {
 
   click = (event) => {
     this.props.onDropClick(event);
+    this.props.resetStrategy();
     this.setState({ 
         isMenuOpen: false,
         buttonText: event.target.innerText,

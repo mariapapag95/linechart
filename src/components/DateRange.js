@@ -39,6 +39,11 @@ export default class DateRange extends React.Component {
       betAmount: undefined,
     }
   }
+resetStrategy = () => {
+  this.setState({
+    strategy: undefined
+  })
+}
 
 handleChange = event => {
     this.setState({
@@ -245,8 +250,8 @@ returnDateArray() {
         </button>
         
         
-        <DropdownBetType onDropClick={this.handleDropDownClick}></DropdownBetType>
-        <DropdownStrategy betType={this.state.betType} onDropClick={this.handleDropDownClick}></DropdownStrategy>
+        <DropdownBetType resetStrategy={this.resetStrategy} onDropClick={this.handleDropDownClick}></DropdownBetType>
+        <DropdownStrategy display={this.state.strategy} betType={this.state.betType} onDropClick={this.handleDropDownClick}></DropdownStrategy>
 
       <input 
       className='input'
