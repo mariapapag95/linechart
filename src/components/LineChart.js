@@ -1,5 +1,5 @@
 import React from 'react'
-import {FlexibleXYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, LineMarkSeries, LineSeries} from 'react-vis';
+import {FlexibleXYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, LineMarkSeries, XYPlot} from 'react-vis';
 
 
 function LineChart(props) {
