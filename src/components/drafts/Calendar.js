@@ -4,7 +4,7 @@ import Dates from '../DateRange'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import Month from '../MonthDropdown'
+import Month from './MonthDropdown'
 import isAfter from "date-fns/isAfter"
 import 'react-datepicker/dist/react-datepicker-cssmodules.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
