@@ -1,8 +1,6 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import DayPicker, { DateUtils } from 'react-day-picker';
-import DropdownBetType from './drafts/DropdownBetType'
-import DropdownStrategy from './drafts/DropdownStrategy'
 import 'react-day-picker/lib/style.css';
 import 'react-datepicker/dist/react-datepicker.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -64,11 +62,11 @@ resetStrategy = () => {
     console.log("SEASON", this.state.season)
   }
 
-handleDropDownClick = (event) => {
-  this.setState({
-    [event.target.name]: event.target.id,
-  })
-}
+// handleDropDownClick = (event) => {
+//   this.setState({
+//     [event.target.name]: event.target.id,
+//   })
+// }
 
   reset = () => {
     this.setState({
@@ -213,37 +211,30 @@ handleDropDownClick = (event) => {
 
         <DropDownSeasons onDropClick={this.handleDropDownClick}/>
         <DropDownBetType reset={this.reset} onDropClick={this.handleDropDownClick}/>
-        <DropDownStrategy onDropClick={this.handleDropDownClick}/>
+        <DropDownStrategy display={this.state.strategy} betType={this.state.betType} onDropClick={this.handleDropDownClick}></DropDownStrategy>
+        {/* <DropDownStrategy onDropClick={this.handleDropDownClick}/> */}
 
-        <button 
+        {/* <button 
         className ='button' 
         onClick={()=>{this.setStartEnd()}}>
         Set start date, end date
-        </button>
+        </button> */}
+        {/* <DropdownBetType resetStrategy={this.resetStrategy} onDropClick={this.handleDropDownClick}></DropdownBetType> */}
         
-        
-        <DropdownBetType resetStrategy={this.resetStrategy} onDropClick={this.handleDropDownClick}></DropdownBetType>
-        <DropdownStrategy display={this.state.strategy} betType={this.state.betType} onDropClick={this.handleDropDownClick}></DropdownStrategy>
-
       <input 
       className='input'
       id='betAmount'
       placeholder='Enter bet amount'
       onChange={this.handleChange}>
       </input>
-      <button 
+
+      {/* <button 
         className='redbutton' 
         type='submit' 
         onClick={()=>{this.returnStrategy()}}>
             Render Graph
-          </button>
+          </button> */}
 
-        <input 
-        className='input'
-        id='betAmount'
-        placeholder='Enter bet amount'
-        onChange={this.handleChange}>
-        </input>
 
         <button 
         className='redbutton' 
