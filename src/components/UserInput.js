@@ -19,6 +19,9 @@ export default class UserInput extends React.Component {
   };
   constructor(props) {
     super(props);
+    this.handleDayClick = this.handleDayClick.bind(this);
+    this.handleResetClick = this.handleResetClick.bind(this);
+    this.handleDropDownClick = this.handleDropDownClick.bind(this);
     this.state = {
       from: undefined,
       to: undefined,
@@ -33,6 +36,11 @@ export default class UserInput extends React.Component {
       // calendar: false
     }
   }
+resetStrategy = () => {
+  this.setState({
+    strategy: undefined
+  })
+}
 
   notEmpty () {
     return this.state.from!==undefined & this.state.to!==undefined
@@ -54,6 +62,12 @@ export default class UserInput extends React.Component {
     console.log("SEASON", this.state.season)}
   }
 
+// handleDropDownClick = (event) => {
+//   this.setState({
+//     [event.target.name]: event.target.id,
+//   })
+// }
+
   reset = () => {
     this.setState({
       strategy: undefined,
@@ -64,26 +78,36 @@ export default class UserInput extends React.Component {
   }
 
   getBaseballApi() {
-// fetches api data and stores in this.state.allData
-// makes default dataset the full dataset 
-    fetch (API_URL)
-    .then(blob => blob.json()).then(json => {
-      let baseballApi = json
-      let x = baseballApi.map((element, i) => {
-        return element.date})
-      let y = baseballApi.map((element, i) => {
-        return element.portfolio_value})
-      const dataset = x.map((x, i) => 
-        ({x:x, y: y[i]}));
-      console.log(x,y)
-      this.setState({allx: x, ally: y, allData: baseballApi, dataset: dataset})
-  })}
+    // fetches api data and stores in this.state.allData
+    // makes default dataset the full dataset 
+        fetch (API_URL)
+        .then(blob => blob.json()).then(json => {
+          let baseballApi = json
+          console.log("BASEBALLAPI", baseballApi)
+          let x = baseballApi.map((element, i) => {
+              return element.date})
+          let y = baseballApi.map((element, i) => {
+              return element.portfolio_value})
+          const dataset = x.map((x, i) => 
+                ({x:x, y: y[i]}));
+            console.log(x,y)
+          this.setState({allx: x, ally: y, allData: baseballApi, dataset: dataset})
+      })}
 
-  componentDidUpdate() {
-    //this.returnStrategy()
-    //this.getBaseballApi()
-    console.log("component did update")
-    console.log("STATE:::", this.state)
+  postBaseballApi() {
+    // post request for 
+    let post = {
+      'start_date': this.state.from, 
+      'end_date': this.state.to, 
+      'bet_type':this.state.betType, 
+      'strategy':this.state.strategy,
+      'bet_amount':this.state.betAmount,}
+    fetch (API_URL, {
+      headers:{"Content-Type" : "application/json"}, 
+      body: JSON.stringify(post),
+      mode:"cors",
+      method:"post"
+    })
   }
 
   unixDate(date) {
