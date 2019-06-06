@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import Stats from './Stats';
 
-// Data should be coming from an API call
-// For this example, we will use the most simple way to access data: an array
 
 const API = 'http://0.0.0.0:5000/api/summary_statistics'
 

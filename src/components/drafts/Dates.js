@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {FlexibleXYPlot, XAxis, YAxis, VerticalGridLines, HorizontalGridLines, LineSeries} from 'react-vis';
-import Calendar from './Calendar'
+import Calendar from './CalendarTest'
 
 const API_URL = "http://localhost:4444"
 

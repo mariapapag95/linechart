@@ -1,31 +1,24 @@
 import React from 'react';
-import Helmet from 'react-helmet';
-import DayPicker, { DateUtils } from 'react-day-picker';
-import 'react-day-picker/lib/style.css';
-import 'react-datepicker/dist/react-datepicker.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'react-datepicker/dist/react-datepicker-cssmodules.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
 //import continuousSizeLegend from 'react-vis/dist/legends/continuous-size-legend';
 import LineChart from './LineChart';
 import DropDownBetType from './DropDownBetType'
 import DropDownStrategy from './DropDownStrategy'
 import DropDownSeasons from './DropDownSeasons'
+import Calendar from './Calendar'
 import { th } from 'date-fns/esm/locale';
 import { thisTypeAnnotation } from '@babel/types';
 import continuousColorLegend from 'react-vis/dist/legends/continuous-color-legend';
 import continuousSizeLegend from 'react-vis/dist/legends/continuous-size-legend';
+import CustomDateRange from './CustomDateRange';
 
 const API_URL = "http://localhost:5000/api/dataset"
 
-export default class DateRange extends React.Component {
+export default class UserInput extends React.Component {
   static defaultProps = {
     numberOfMonths: 2,
   };
   constructor(props) {
     super(props);
-    this.handleDayClick = this.handleDayClick.bind(this);
-    this.handleResetClick = this.handleResetClick.bind(this);
     this.state = {
       from: undefined,
       to: undefined,
@@ -37,7 +30,12 @@ export default class DateRange extends React.Component {
       betType: undefined,
       betAmount: undefined,
       season: undefined,
+      // calendar: false
     }
+  }
+
+  notEmpty () {
+    return this.state.from!==undefined & this.state.to!==undefined
   }
 
   handleChange = event => {
@@ -48,12 +46,12 @@ export default class DateRange extends React.Component {
   }
 
   handleDropDownClick = (event) => {
-    this.setState({
+    {this.setState({
       [event.target.name]: event.target.id,
     })
     this.season(this.state.season)
     this.setState({betAmount: document.getElementById('betAmount').value})
-    console.log("SEASON", this.state.season)
+    console.log("SEASON", this.state.season)}
   }
 
   reset = () => {
@@ -63,27 +61,6 @@ export default class DateRange extends React.Component {
       betAmount: undefined,
       season: undefined,
     })
-  }
-  
-  getInitialState() {
-// used to toggle the graph on/off
-    return {
-      from: undefined,
-      to: undefined,
-    };
-  }
-
-  handleDayClick(day) {
-// used for calendar picker, has become unecesary
-// but may be needed if calendar is refactored into UX
-    const range = DateUtils.addDayToRange(day, this.state);
-    this.setState(range);    
-  }
-
-  handleResetClick() {
-// used for calendar picker, has become unecesary
-// but may be needed if calendar is refactored into UX
-    this.setState(this.getInitialState());
   }
 
   getBaseballApi() {
@@ -101,7 +78,6 @@ export default class DateRange extends React.Component {
       console.log(x,y)
       this.setState({allx: x, ally: y, allData: baseballApi, dataset: dataset})
   })}
-
 
   componentDidUpdate() {
     //this.returnStrategy()
@@ -168,29 +144,25 @@ export default class DateRange extends React.Component {
     console.log('season function')
     let start = new Date (year, 2, 15)
     start = this.unixDate(start)
-    console.log("heylloowloewlwoelwoe",start)
     let end = new Date (year, 10, 15)
     end = this.unixDate(end)
-    console.log("what type is end?????????", typeof end)
-    console.log("fire alarm", end)
     this.setState({from : start, to: end})
-    console.log("****************",this.state.from, this.state.to)
+    console.log("*******THIS.STATE.FROM, THIS.STATE.TO*********",this.state.from, this.state.to)
   }
       
 
   render() {
     console.log("RENDER", this.state)
-    const { from, to } = this.state;
-    //const modifiers = { start: from, end: to }; // used for the calendar date picker, might need later
+    // const calendar = this.state.calendar
+    // if (calendar) 
+    // {<Calendar/>}
     return (
       <div>
-        <button onClick={()=>{this.season(2010)}}>
-          test date
-        </button>
 
+        <CustomDateRange/>
         <DropDownSeasons onDropClick={this.handleDropDownClick}/>
         <DropDownBetType reset={this.reset} onDropClick={this.handleDropDownClick}/>
-        <DropDownStrategy onDropClick={this.handleDropDownClick}/>
+        <DropDownStrategy display={this.state.strategy} betType={this.state.betType} onDropClick={this.handleDropDownClick}/>
 
         <input 
         className='input'
@@ -205,12 +177,12 @@ export default class DateRange extends React.Component {
         onClick={()=>{this.submit()}}>
         Render Graph
         </button>
-
+        <div className="table">
         <LineChart 
         data = {this.state.dataset} 
         strategyOne = {this.state.strategyOne} 
         strategyTwo = {this.state.strategyTwo}/>
-      
+        </div>
       </div>
     );
   }

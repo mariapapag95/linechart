@@ -1,5 +1,6 @@
 import React from 'react';
-import DropdownMenu from 'react-dd-menu';
+import DropdownMenu, { NestedDropdownMenu }from 'react-dd-menu';
+import Calendar from './Calendar'
 
 class DropDownSeasons extends React.Component {
 
@@ -7,11 +8,13 @@ class DropDownSeasons extends React.Component {
       super(props);
       this.state = { 
           isMenuOpen: false, 
-          buttonText: 'Select Season'
+          buttonText: 'Select Season',
+          calendar: false
         }};
     
       toggle = () => {
         this.setState({ isMenuOpen: !this.state.isMenuOpen });
+        if (this.state.calendar === true){this.setState({calendar: false})}
       }
     
       close = () => {
@@ -25,17 +28,22 @@ class DropDownSeasons extends React.Component {
             buttonText: event.target.innerText,
         });
       };
+
+      calendarOpen = (event) => {
+        this.setState({ 
+            buttonText: event.target.innerText,
+            calendar: true
+        });
+      };
     
       render() {
         const menuOptions = {
           isOpen: this.state.isMenuOpen,
           close: this.close,
           toggle: <button className= 'button' onClick={this.toggle}>{this.state.buttonText}</button>,
-          align: 'right',
+          align: 'center',
         };
     
-        
-        console.log(this.state)
         return (
           <DropdownMenu {...menuOptions}>
             <li><button className='button' name="season" type="button" id='2010' onClick={this.click}>2010</button></li>

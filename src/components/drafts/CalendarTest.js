@@ -1,6 +1,6 @@
 import React, { Component, Redirect } from 'react'
 import LineChart from '../LineChart'
-import Dates from '../DateRange'
+import Dates from '../UserInput'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
