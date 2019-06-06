@@ -19,9 +19,10 @@ export default class UserInput extends React.Component {
   };
   constructor(props) {
     super(props);
-    this.handleDayClick = this.handleDayClick.bind(this);
-    this.handleResetClick = this.handleResetClick.bind(this);
-    this.handleDropDownClick = this.handleDropDownClick.bind(this);
+    // vvvvvvvv these three lines cause error "cannot bind undefined"
+    // this.handleDayClick = this.handleDayClick.bind(this);
+    // this.handleResetClick = this.handleResetClick.bind(this);
+    // this.handleDropDownClick = this.handleDropDownClick.bind(this);
     this.state = {
       from: undefined,
       to: undefined,

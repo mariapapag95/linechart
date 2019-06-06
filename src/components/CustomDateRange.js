@@ -30,7 +30,7 @@ class CustomDateRange extends React.Component {
     const menuOptions = {
       isOpen: this.state.isMenuOpen,
       close: this.close,
-      toggle: <button className='button' onClick={this.toggle}>{this.state.buttonText}</button>,
+      toggle: <button className= 'button' onClick={this.toggle}>{this.state.buttonText}</button>,
       align: 'right',
     };
 

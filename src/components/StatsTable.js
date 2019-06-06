@@ -10,7 +10,7 @@ class StatsTable extends Component {
         data: []
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
         const promise = fetch(API)
         promise.then(blob => blob.json()).then(json => 
             this.setState({data: json}))
