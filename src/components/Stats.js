@@ -2,7 +2,7 @@ import React from 'react'
 
 function Stats(props) {
     return(
-        <p>{props.stat}</p>
+        <td>{props.stat}</td>
     )
 }
 

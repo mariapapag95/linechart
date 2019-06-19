@@ -5,13 +5,16 @@ import DropDownBetType from './DropDownBetType'
 import DropDownStrategy from './DropDownStrategy'
 import DropDownSeasons from './DropDownSeasons'
 import Calendar from './Calendar'
-import { th } from 'date-fns/esm/locale';
+// import { th } from 'date-fns/esm/locale';
 import { thisTypeAnnotation } from '@babel/types';
 import continuousColorLegend from 'react-vis/dist/legends/continuous-color-legend';
 import continuousSizeLegend from 'react-vis/dist/legends/continuous-size-legend';
 import CustomDateRange from './CustomDateRange';
+import StatsTable from './StatsTable';
+import moment from 'moment';
 
 const API_URL = "http://localhost:5000/api/dataset"
+
 
 export default class UserInput extends React.Component {
   static defaultProps = {
@@ -63,11 +66,14 @@ resetStrategy = () => {
     console.log("SEASON", this.state.season)}
   }
 
-// handleDropDownClick = (event) => {
-//   this.setState({
-//     [event.target.name]: event.target.id,
-//   })
-// }
+  reformatData = (data) => {
+    const copy = data
+      let i = 0
+      for (i in copy) {
+        copy[i].x = moment.unix(copy[i].x).format("DD-MMM-YYYY")
+      }
+    return copy
+  }
 
   reset = () => {
     this.setState({
@@ -153,7 +159,7 @@ resetStrategy = () => {
             return element.portfolio_value})
           const dataset = x.map((x, i) => 
             ({x:x, y: y[i]}));
-          console.log(x,y)
+          console.log(this.formatDate(x),y)
           this.setState({dataset: dataset})
           console.log("woohoooooooooo", this.state.dataset)
       })}
@@ -169,7 +175,7 @@ resetStrategy = () => {
     console.log('season function')
     let start = new Date (year, 2, 15)
     start = this.unixDate(start)
-    let end = new Date (year, 10, 15)
+    let end = new Date (2019, 10, 15)
     end = this.unixDate(end)
     this.setState({from : start, to: end})
     console.log("*******THIS.STATE.FROM, THIS.STATE.TO*********",this.state.from, this.state.to)
@@ -177,14 +183,16 @@ resetStrategy = () => {
       
 
   render() {
-    console.log("RENDER", this.state)
-    // const calendar = this.state.calendar
-    // if (calendar) 
-    // {<Calendar/>}
-    return (
-      <div>
+    
+    const { dataset } = this.state;
 
-        <CustomDateRange/>
+    let reData = dataset;
+    reData = this.reformatData(dataset)
+    console.log(reData)
+
+    return (
+      <div className='newest'>
+        {/* <CustomDateRange/> */}
         <DropDownSeasons onDropClick={this.handleDropDownClick}/>
         <DropDownBetType reset={this.reset} onDropClick={this.handleDropDownClick}/>
         <DropDownStrategy display={this.state.strategy} betType={this.state.betType} onDropClick={this.handleDropDownClick}/>
@@ -202,12 +210,17 @@ resetStrategy = () => {
         onClick={()=>{this.submit()}}>
         Render Graph
         </button>
-        <div className="table">
         <LineChart 
-        data = {this.state.dataset} 
+        data = {reData} 
         strategyOne = {this.state.strategyOne} 
         strategyTwo = {this.state.strategyTwo}/>
-        </div>
+        <StatsTable
+        betAmount={this.state.betAmount} 
+        strategy={this.state.strategy}
+        season={this.state.season}
+        betType={this.state.betType}
+        >
+        </StatsTable>
       </div>
     );
   }

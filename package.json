@@ -19,6 +19,7 @@
     "react-easy-chart": "^1.0.0",
     "react-fontawesome": "^1.6.1",
     "react-helmet": "^5.2.1",
+    "react-number-format": "^4.0.8",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.1",
