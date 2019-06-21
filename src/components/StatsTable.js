@@ -25,15 +25,13 @@ const formatPercent = new Intl.NumberFormat("en-US",
              maximumFractionDigits: 1})
 
 class StatsTable extends Component {
-    state = {
-        data: []
-    }
 
     componentDidUpdate() {
-        const promise = fetch(API)
-        promise.then(blob => blob.json()).then(json => 
-            this.setState({data: json}))
+        // const promise = fetch(API)
+        // promise.then(blob => blob.json()).then(json => 
+        //     this.setState({data: json}))
         }
+    
     
         showBetType = input => {
         if (input === 'ml') {return "Money Line"}
@@ -42,7 +40,7 @@ class StatsTable extends Component {
     }
 
     renderTableData() {
-        return this.state.data.map((element, index) => {
+        return this.props.data.map((element, index) => {
             const { wins, losses, pushes, win_amount_avg, win_amount_std } = element
             const total_games_played = wins + losses + pushes
 
@@ -98,10 +96,9 @@ class StatsTable extends Component {
         })
     }
 
-
     render () {
             const { betAmount } = this.props;
-            const { data } = this.state;
+            // const { data } = this.state;
         return (
                 <div>
                 {betAmount ? (

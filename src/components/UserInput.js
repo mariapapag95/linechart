@@ -1,5 +1,6 @@
 import React from 'react';
 //import continuousSizeLegend from 'react-vis/dist/legends/continuous-size-legend';
+import { withRouter } from 'react-router-dom'
 import LineChart from './LineChart';
 import DropDownBetType from './DropDownBetType'
 import DropDownStrategy from './DropDownStrategy'
@@ -11,12 +12,13 @@ import continuousColorLegend from 'react-vis/dist/legends/continuous-color-legen
 import continuousSizeLegend from 'react-vis/dist/legends/continuous-size-legend';
 import CustomDateRange from './CustomDateRange';
 import StatsTable from './StatsTable';
+import Navbar from './Navbar'
 import moment from 'moment';
 
 const API_URL = "http://localhost:5000/api/dataset"
+const API = 'http://0.0.0.0:5000/api/summary_statistics'
 
-
-export default class UserInput extends React.Component {
+class UserInput extends React.Component {
   static defaultProps = {
     numberOfMonths: 2,
   };
@@ -37,6 +39,7 @@ export default class UserInput extends React.Component {
       betType: undefined,
       betAmount: undefined,
       season: undefined,
+      summary: []
       // calendar: false
     }
   }
@@ -167,6 +170,9 @@ resetStrategy = () => {
 
   submit() {
     this.returnStrategy()
+    let promise = fetch(API)
+        promise.then(blob => blob.json()).then(json => 
+            this.setState({summary: json}))    
    // this.returnStrategy()
   //   console.log('HAS BEEN SUBMITTED WOOHOO')
   }
@@ -184,15 +190,18 @@ resetStrategy = () => {
 
   render() {
     
-    const { dataset } = this.state;
+    const { dataset, summary } = this.state;
 
     let reData = dataset;
     reData = this.reformatData(dataset)
     console.log(reData)
 
     return (
+      
+      
       <div className='newest'>
         {/* <CustomDateRange/> */}
+        
         <DropDownSeasons onDropClick={this.handleDropDownClick}/>
         <DropDownBetType reset={this.reset} onDropClick={this.handleDropDownClick}/>
         <DropDownStrategy display={this.state.strategy} betType={this.state.betType} onDropClick={this.handleDropDownClick}/>
@@ -215,6 +224,7 @@ resetStrategy = () => {
         strategyOne = {this.state.strategyOne} 
         strategyTwo = {this.state.strategyTwo}/>
         <StatsTable
+        data={summary}
         betAmount={this.state.betAmount} 
         strategy={this.state.strategy}
         season={this.state.season}
@@ -225,3 +235,5 @@ resetStrategy = () => {
     );
   }
 }
+
+export default withRouter(UserInput);

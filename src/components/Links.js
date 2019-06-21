@@ -1,17 +1,15 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 
 function Links (props) {
     return (
         <div className="navbar">
             <ul>
-                <li><a><Link to = '/'><strong>Baseball</strong></Link></a></li>
-                {/* <li><a><Link to = '/'>My Portfolio</Link></a></li>
-                <li><a><Link to = '/'>link 1</Link></a></li>
-                <li><a><Link to = '/'>link 2</Link></a></li> */}
+                <li><Link to = '/'><strong>Baseball</strong></Link></li>
+                <li><Link to = '/results'><strong>Results</strong></Link></li>
             </ul>
         </div>
     )
 }
 
-export default Links;
+export default withRouter(Links);
